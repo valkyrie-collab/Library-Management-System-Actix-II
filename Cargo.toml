@@ -3,6 +3,18 @@ name = "library_management_system_two"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "consumer"
+path = "./src/consumer/main.rs"
+
+[[bin]]
+name = "book"
+path = "./src/book/main.rs"
+
+[lib]
+name = "lms"
+path = "./src/lib.rs"
+
 [dependencies]
 #Actix
 actix-web = "4.15.0"

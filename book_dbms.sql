@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS book (
+    isbn VARCHAR(32) PRIMARY KEY,
+    title VARCHAR(100) UNIQUE NOT NULL,
+    author VARCHAR(50) NOT NULL
+);
+
+SELECT * FROM book ORDER BY title;
+DROP TABLE IF EXISTS book;
+
+CREATE TABLE IF NOT EXISTS book_image (
+    id SERIAL PRIMARY KEY,
+    isbn VARCHAR(32) NOT NULL REFERENCES book(isbn) ON DELETE CASCADE,
+    name VARCHAR(50),
+    ext VARCHAR(50) NOT NULL,
+    data BYTEA NOT NULL
+);
+
+SELECT * FROM book_image ORDER BY id;
+DROP TABLE IF EXISTS book_image;
+
+CREATE TABLE IF NOT EXISTS book_copy (
+    id SERIAL PRIMARY KEY,
+    isbn VARCHAR(32) NOT NULL REFERENCES book(isbn) ON DELETE CASCADE,
+    copy_number BIGINT NOT NULL,
+    is_borrowed BOOLEAN DEFAULT FALSE,
+    pda_address VARCHAR(50) NOT NULL,
+    borrower_address VARCHAR(50) NOT NULL
+);
+
+SELECT * FROM book_copy ORDER BY id;
+DROP TABLE IF EXISTS book_copy;
