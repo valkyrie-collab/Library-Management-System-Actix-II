@@ -2763,6 +2763,7 @@ dependencies = [
  "borsh",
  "futures-util",
  "jsonwebtoken",
+ "library_management_system_two_blc",
  "reqwest 0.13.5",
  "serde",
  "serde_json",
@@ -2771,6 +2772,13 @@ dependencies = [
  "sqlx",
  "tokio",
  "uuid",
+]
+
+[[package]]
+name = "library_management_system_two_blc"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
 ]
 
 [[package]]

@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS book_copy (
     isbn VARCHAR(32) NOT NULL REFERENCES book(isbn) ON DELETE CASCADE,
     copy_number BIGINT NOT NULL,
     is_borrowed BOOLEAN DEFAULT FALSE,
-    pda_address VARCHAR(50) NOT NULL,
-    borrower_address VARCHAR(50) NOT NULL
+    pda_address VARCHAR(50) NULL,
+    borrower_address VARCHAR(50) NULL
 );
 
 SELECT * FROM book_copy ORDER BY id;
