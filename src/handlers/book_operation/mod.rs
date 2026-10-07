@@ -2,7 +2,7 @@ use std::env;
 
 use actix_web::{post, get, delete, web, HttpResponse};
 
-use crate::models::book::{Book, BookShow, BookShowConsumer};
+use crate::models::book::{Book, BookBorrowDetails, BookShow, BookShowConsumer};
 
 #[post("/save-book")]
 pub async fn save_book(client: web::Data<reqwest::Client>, bok: web::Json<Book>) -> HttpResponse {
@@ -218,6 +218,65 @@ pub async fn get_book_details_private(client: web::Data<reqwest::Client>, words:
 //     }
 // 
 // }
+
+#[post("/return-book")]
+pub async fn return_book(client: web::Data<reqwest::Client>, bdk: web::Json<BookBorrowDetails>) -> HttpResponse {
+    let url: String = match std::env::var("BOOK_URL") {
+        Ok(xrl) => xrl,
+        Err(xer) => {
+            let msg: String = format!("Error! while getting book url {}", xer);
+            return HttpResponse::InternalServerError().body(msg);
+        }
+    };
+
+    let bk_url: String = format!("{}/book/return-book", url);
+    let response: Result<reqwest::Response, reqwest::Error> = client.post(&bk_url).header("content-type", "application/json")
+        .json(&bdk).send().await;
+
+    match response {
+        Ok(xrp) => {
+            let is_succeed: bool = xrp.status().is_success();
+            let msg: String = xrp.text().await.unwrap_or_else(
+                |xer| format!("Error! did not get any response message | {}", xer)
+            );
+            if is_succeed { HttpResponse::Ok() } else { HttpResponse::BadRequest() }.body(msg)
+        }
+        Err(xer) => {
+            let msg: String = format!("Error! did not get response, Exited with error {}", xer);
+            HttpResponse::InternalServerError().body(msg)
+        }
+    }
+
+}
+
+#[post("/borrow-book")]
+pub async fn borrow_book(client: web::Data<reqwest::Client>, bdk: web::Json<BookBorrowDetails>) -> HttpResponse {
+    let url: String = match std::env::var("BOOK_URL") {
+        Ok(xrl) => xrl,
+        Err(xer) => {
+            let msg: String = format!("Error! while getting book url {}", xer);
+            return HttpResponse::InternalServerError().body(msg);
+        }
+    };
+
+    let bk_url: String = format!("{}/book/borrow-book", url);
+    let response: Result<reqwest::Response, reqwest::Error> = client.post(&bk_url).header("content-type", "application/json")
+        .json(&bdk).send().await;
+
+    match response {
+        Ok(xrp) => {
+            let is_succeed: bool = xrp.status().is_success();
+            let msg: String = xrp.text().await.unwrap_or_else(
+                |xer| format!("Error! did not get any response message | {}", xer)
+            );
+            if is_succeed { HttpResponse::Ok() } else { HttpResponse::BadRequest() }.body(msg)
+        }
+        Err(xer) => {
+            let msg: String = format!("Error! did not get response, Exited with error {}", xer);
+            HttpResponse::InternalServerError().body(msg)
+        }
+    }
+}
 
 #[delete("/remove-book/{isbn_number}")]
 pub async fn remove_book(client: web::Data<reqwest::Client>, isbn_number: web::Path<String>) -> HttpResponse {

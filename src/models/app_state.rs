@@ -1,28 +1,22 @@
+use anchor_client::Signer;
+use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::{pubkey::Pubkey, signature::Keypair};
 use sqlx::PgPool;
 
 pub struct AppState {
-    rpc_url: String,
+    rpc_url: RpcClient,
     program_id: Pubkey,
-    admin_id: Keypair
 }
 
 impl AppState {
-    pub fn new(url: String, pid: Pubkey, aid: Keypair) -> AppState {
-        AppState { rpc_url: url, program_id: pid, admin_id: aid }
+    pub fn new(url: RpcClient, pid: Pubkey) -> AppState {
+        AppState { rpc_url: url, program_id: pid }
     }
 
-    pub fn get_rpc_url(&self) -> &String {
-        &self.rpc_url
-    }
+    pub fn get_rpc_url(&self) -> &RpcClient { &self.rpc_url }
 
-    pub fn get_program_id(&self) -> &Pubkey {
-        &self.program_id
-    }
+    pub fn get_program_id(&self) -> &Pubkey { &self.program_id }
 
-    pub fn get_admin_id(&self) -> &Keypair {
-        &self.admin_id
-    }
 }
 
 pub struct Database {

@@ -56,7 +56,6 @@ borsh = "1.8.1"
 #For generating UUID
 uuid = { version = "1.26.1", features = ["v4", "fast-rng", "serde"]}
 
-lms_program = { package = "library_management_system_two_blc",
-    path = "/home/valkyrie-pc/Documents/Programming/RustProgramming/BlockChain/library_management_system_two_blc/programs/library_management_system_two_blc",
-    features = ["cpi"]
-}
+bincode = "1.3.3"
+
+lms_program = { package = "library_management_system_two_blc",path = "/home/valkyrie-pc/Documents/Programming/RustProgramming/BlockChain/library_management_system_two_blc/programs/library_management_system_two_blc",features = ["cpi"]}

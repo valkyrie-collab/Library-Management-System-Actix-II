@@ -1,3 +1,5 @@
+use borsh::{BorshDeserialize, BorshSerialize};
+
 #[derive(serde::Serialize, serde::Deserialize, sqlx::FromRow, Clone)]
 pub struct Book {
     isbn: String,
@@ -81,8 +83,9 @@ impl BookShow {
     }
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, sqlx::FromRow, Clone)]
 pub struct BookShowConsumer {
+    #[sqlx(flatten)]
     bookshow: BookShow,
     borrower_id: String,
 }
@@ -108,4 +111,52 @@ pub struct BookDetails {
     pub copy_number: Option<i64>
 }
 
+#[derive(serde::Serialize, serde::Deserialize, sqlx::FromRow)]
+pub struct BookBorrowDetails {
+    #[sqlx(flatten)]
+    pub book: Book,
+    pub borrower_id: String,
+    pub copy_number: i64,
+    pub days: u64,
+}
+
 //book initialize pda
+#[derive(BorshDeserialize, BorshSerialize)]
+pub struct BookPda {
+    pub bump: u8,
+    pub isbn: String,
+    pub is_borrowed: bool,
+    pub borrower: Option<String>,
+    pub time: u64,
+    pub copy: u64
+}
+
+impl BookPda {
+    pub fn new(b: u8, i: String, isb: bool, br: Option<String>, t: u64, cp: u64) -> BookPda {
+        BookPda { bump: b, isbn: i, is_borrowed: isb, borrower: br, time: t, copy: cp }
+    }
+    
+    pub fn get_bump(&self) -> u8 {
+        self.bump
+    }
+    
+    pub fn get_isbn(&self) -> &String {
+        &self.isbn
+    }
+    
+    pub fn get_is_borrowed(&self) -> bool {
+        self.is_borrowed
+    }
+    
+    pub fn get_borrower(&self) -> Option<&String> {
+        self.borrower.as_ref()
+    }
+    
+    pub fn get_borrow_time(&self) -> u64 {
+        self.time
+    }
+    
+    pub fn get_which_number_of_copy(&self) -> u64 {
+        self.copy
+    }
+}

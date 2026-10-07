@@ -23,9 +23,11 @@ CREATE TABLE IF NOT EXISTS book_copy (
     isbn VARCHAR(32) NOT NULL REFERENCES book(isbn) ON DELETE CASCADE,
     copy_number BIGINT NOT NULL,
     is_borrowed BOOLEAN DEFAULT FALSE,
-    pda_address VARCHAR(50) NULL,
-    borrower_address VARCHAR(50) NULL
+    pda_address VARCHAR(50) DEFAULT NULL,
+    borrower_address VARCHAR(50) DEFAULT NULL,
+    borrow_duration BIGINT DEFAULT NULL
 );
 
+ALTER TABLE book_copy ADD COLUMN borrow_duration BIGINT DEFAULT NULL;
 SELECT * FROM book_copy ORDER BY id;
 DROP TABLE IF EXISTS book_copy;

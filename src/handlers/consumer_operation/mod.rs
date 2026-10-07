@@ -153,6 +153,65 @@ pub async fn get_consumer_details(client: web::Data<reqwest::Client>, name: web:
 
 }
 
+
+#[get("/initialize-library/{consumer_name}/{name}/{description}")]
+pub async fn initialize_library(client: web::Data<reqwest::Client>, params: web::Path<(String, String, String)>) -> HttpResponse {
+    let url: String = match std::env::var("CONSUMER_URL") {
+        Ok(xul) => xul,
+        Err(xer) => {
+            let msg: String = format!("Error! did not find consumer url, Exited with error {}", xer);
+            return HttpResponse::BadRequest().body(msg);
+        }
+    };
+
+    let consumer_url: String = format!("{}/consumer/initialize-library/{}/{}/{}", url, &params.0, &params.1, &params.2);
+    let response: Result<reqwest::Response, reqwest::Error> = client.get(&consumer_url).send().await;
+
+    match response {
+        Ok(xrs) => {
+            let is_success: bool = xrs.status().is_success();
+            let msg: String = xrs.text().await.unwrap_or_else(
+                |xer| format!("Error! got no response message {}", xer)
+            );
+            if is_success { HttpResponse::Ok() } else { HttpResponse::BadRequest() }.body(msg)
+        }
+        Err(xer) => {
+            let msg: String = format!("Error! response did not succeed, Exited with error {}", xer);
+            HttpResponse::InternalServerError().body(msg)
+        }
+    }
+
+}
+
+#[get("/initialize-book/{consumer_name}/{isbn_number}/{copy_number}")]
+pub async fn initialize_book(client: web::Data<reqwest::Client>, params: web::Path<(String, String, u64)>) -> HttpResponse {
+    let url: String = match std::env::var("CONSUMER_URL") {
+        Ok(xul) => xul,
+        Err(xer) => {
+            let msg: String = format!("Error! did not find consumer url, Exited with error {}", xer);
+            return HttpResponse::BadRequest().body(msg);
+        }
+    };
+
+    let consumer_url: String = format!("{}/consumer/initialize-book/{}/{}/{}", url, &params.0, &params.1, &params.2);
+    let response: Result<reqwest::Response, reqwest::Error> = client.get(&consumer_url).send().await;
+
+    match response {
+        Ok(xrs) => {
+            let is_success: bool = xrs.status().is_success();
+            let msg: String = xrs.text().await.unwrap_or_else(
+                |xer| format!("Error! got no response message {}", xer)
+            );
+            if is_success { HttpResponse::Ok() } else { HttpResponse::BadRequest() }.body(msg)
+        }
+        Err(xer) => {
+            let msg: String = format!("Error! response did not succeed, Exited with error {}", xer);
+            HttpResponse::InternalServerError().body(msg)
+        }
+    }
+
+}
+
 #[delete("/remove-consumer/{consumer_username}")]
 pub async fn remove_consumer(client: web::Data<reqwest::Client>, name: web::Path<String>) -> HttpResponse {
     let url: String = match std::env::var("CONSUMER_URL") {
